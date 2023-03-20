@@ -1,0 +1,41 @@
+apiVersion: apps/v1             
+kind: Deployment                
+metadata:
+  name: frontend-app      
+spec:
+  replicas: 1                   
+  selector:                     
+    matchLabels:                
+      app: frontend-app
+  template:                     
+    metadata:
+      labels:                   
+        app: frontend-app
+    spec:                       
+      containers:
+      - name: frontend-app
+        image: vamshi825232/frontend:latest
+        imagePullPolicy: Always
+        ports:
+          - name: http
+            containerPort: 80   
+        resources:
+          limits:
+            cpu: 0.2
+            memory: "100Mi"
+        env:
+        - name: REACT_APP_API_BASE_URL
+          value: http://52.149.185.140:8080/api
+---
+apiVersion: v1                  
+kind: Service                   
+metadata:
+  name: frontend-app      
+spec:
+  type: LoadBalancer                
+  selector:
+    app: frontend-app     
+  ports:                        
+  - name: http
+    port: 80
+    targetPort: 80

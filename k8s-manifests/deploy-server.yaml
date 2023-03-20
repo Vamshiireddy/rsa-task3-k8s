@@ -1,0 +1,49 @@
+apiVersion: apps/v1           
+kind: Deployment              
+metadata:
+  name: server-app    
+  labels:                     
+    app: server-app
+spec:
+  replicas: 1                 
+  selector:
+    matchLabels:              
+      app: server-app
+  template:                   
+    metadata:
+      labels:                 
+        app: server-app
+    spec:                     
+      containers:
+      - name: server-app
+        image: vamshi825232/backend:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+          - name: http
+            containerPort: 8080 
+        resources:
+          limits:
+            cpu: 0.2
+            memory: "200Mi"
+        env:                  
+        - name: SPRING_DATASOURCE_USERNAME 
+          value: callicoder
+        - name: SPRING_DATASOURCE_PASSWORD
+          value: c@ll1c0d3r
+        - name: SPRING_DATASOURCE_URL
+          value: jdbc:mysql://demo-app-mysql:3306/polls?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false
+---
+apiVersion: v1                
+kind: Service                 
+metadata:                     
+  name: server-app    
+  labels:                     
+    app: server-app
+spec:                         
+  type: LoadBalancer              
+  selector:
+    app: server-app   
+  ports:                      
+  - name: http
+    port: 8080
+    targetPort: 8080
